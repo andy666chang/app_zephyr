@@ -1,0 +1,40 @@
+config M031_LIBRARY
+	bool
+	depends on SOC_SERIES_M031
+
+if M031_LIBRARY
+
+config M031_ADC
+    bool 
+
+config M031_CRC
+    bool 
+
+config M031_EINT
+    bool 
+
+config M031_FMC
+    bool 
+
+config M031_GPIO
+    bool 
+
+config M031_I2C
+    bool 
+
+config M031_IWDT
+    bool 
+
+config M031_SPI
+    bool 
+
+config M031_TMR
+    bool 
+
+config M031_USART
+    bool 
+
+config M031_WWDT
+    bool 
+
+endif # M031_LIBRARY

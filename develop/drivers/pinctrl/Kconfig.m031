@@ -1,0 +1,6 @@
+
+config PINCTRL_M031
+	bool "PINCTRL Driver for M031 family of MCUs"
+    default y
+	depends on PINCTRL
+	depends on SOC_FAMILY_M03X

@@ -1,0 +1,7 @@
+
+if BOARD_NUVOTON_M031
+
+config BOARD
+	default "nuvoton_m031"
+
+endif # BOARD_NUVOTON_M031

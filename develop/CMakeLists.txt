@@ -1,6 +1,6 @@
 
 
-# add_subdirectory(boards)
-# add_subdirectory(modules)
-# add_subdirectory(soc)
+zephyr_include_directories(include)
 
+add_subdirectory(drivers)
+add_subdirectory(hal)

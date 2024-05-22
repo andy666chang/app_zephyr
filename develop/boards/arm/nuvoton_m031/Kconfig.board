@@ -1,0 +1,4 @@
+
+config BOARD_NUVOTON_M031
+	bool "NUVOTON M031 Development Board"
+	depends on SOC_M031

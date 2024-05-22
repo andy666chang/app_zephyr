@@ -1,6 +1,7 @@
 
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <NuMicro.h>
 
 void z_arm_platform_init(void)
 {

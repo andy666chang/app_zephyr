@@ -1,0 +1,10 @@
+
+if PINCTRL
+
+module = PINCTRL
+module-str = PINCTRL
+source "subsys/logging/Kconfig.template.log_config"
+
+rsource "./Kconfig.*"
+
+endif # PINCTRL

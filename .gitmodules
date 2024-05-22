@@ -1,0 +1,3 @@
+[submodule "develop/hal/M031BSP"]
+	path = develop/hal/M031BSP
+	url = git@github.com:OpenNuvoton/M031BSP.git
