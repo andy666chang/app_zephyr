@@ -1,0 +1,13 @@
+
+
+if SOC_M031 || SOC_M032
+
+config SOC
+	default "m03x"
+
+config NUM_IRQS
+	default 32
+
+endif # SOC_M031 || SOC_M032
+
+
