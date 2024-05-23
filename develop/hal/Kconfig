@@ -1,6 +1,6 @@
 config M031_LIBRARY
 	bool
-	depends on SOC_SERIES_M03X
+	depends on SOC_FAMILY_M03X
 
 if M031_LIBRARY
 
