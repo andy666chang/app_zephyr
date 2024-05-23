@@ -1,7 +1,7 @@
 
 menuconfig GPIO_M031
 	bool "GPIO Driver for M031 family of MCUs"
-    default y
+    default n
 	depends on SOC_FAMILY_M03X
 	select M031_GPIO
 	help
