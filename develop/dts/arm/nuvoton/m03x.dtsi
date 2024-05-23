@@ -49,7 +49,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x40004000 0x40>;
             status = "disabled";
-            interrupts = <16 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <16>;
@@ -59,7 +58,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x40004040 0x40>;
             status = "disabled";
-            interrupts = <17 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <16>;
@@ -69,7 +67,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x40004080 0x40>;
             status = "disabled";
-            interrupts = <18 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <15>;
@@ -79,7 +76,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x400040c0 0x40>;
             status = "disabled";
-            interrupts = <19 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <15>;
@@ -89,7 +85,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x40004100 0x40>;
             status = "disabled";
-            interrupts = <20 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <16>;
@@ -99,7 +94,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x40004140 0x40>;
             status = "disabled";
-            interrupts = <21 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <12>;
@@ -109,7 +103,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x40004180 0x40>;
             status = "disabled";
-            interrupts = <72 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <16>;
@@ -119,7 +112,6 @@
             compatible = "nuvoton,m031-gpio";
             reg = <0x400041c0 0x40>;
             status = "disabled";
-            interrupts = <88 2>;
             gpio-controller;
             #gpio-cells = <2>;
             ngpios = <12>;

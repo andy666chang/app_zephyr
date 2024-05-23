@@ -3,6 +3,7 @@
 #define DT_DRV_COMPAT nuvoton_m031_gpio
 
 #include <zephyr/device.h>
+// #include <zephyr/irq.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/gpio/gpio_utils.h>
 
@@ -46,9 +47,7 @@ static int gpio_m031_configure(const struct device *dev,
 
 	uint32_t mode;
 	uint32_t debounce_enable = 0;
-	uint32_t schmitt_enable = 0;
 	uint32_t disable_input_path = 0;
-	uint32_t bias = GPIO_PUSEL_DISABLE;
 
 	/* Pin mode */
 	if ((flags & GPIO_OUTPUT) != 0) {
@@ -69,13 +68,11 @@ static int gpio_m031_configure(const struct device *dev,
 
 		mode = GPIO_MODE_INPUT;
 
-		if ((flags & m031_GPIO_INPUT_DEBOUNCE) != 0) {
+		// TODO: M031_GPIO_INPUT_DEBOUNCE
+		// if ((flags & M031_GPIO_INPUT_DEBOUNCE) != 0) {
 			debounce_enable = 1;
-		}
+		// }
 
-		if ((flags & m031_GPIO_INPUT_SCHMITT) != 0) {
-			schmitt_enable = 1;
-		}
 	} else {
 		/* Deactivated: Analog */
 
@@ -83,23 +80,12 @@ static int gpio_m031_configure(const struct device *dev,
 		disable_input_path = 1;
 	}
 
-	/* Bias */
-	if ((flags & GPIO_OUTPUT) != 0 || (flags & GPIO_INPUT) != 0) {
-		if ((flags & GPIO_PULL_UP) != 0) {
-			bias = GPIO_PUSEL_PULL_UP;
-		} else if ((flags & GPIO_PULL_DOWN) != 0) {
-			bias = GPIO_PUSEL_PULL_DOWN;
-		}
-	}
 
 	regs->MODE = (regs->MODE & ~MODE_MASK(pin)) |
 		     (mode << MODE_PIN_SHIFT(pin));
 	regs->DBEN = (regs->DBEN & ~BIT(pin)) | (debounce_enable << pin);
-	regs->SMTEN = (regs->SMTEN & ~BIT(pin)) | (schmitt_enable << pin);
 	regs->DINOFF = (regs->DINOFF & ~DINOFF_MASK(pin)) |
 		       (disable_input_path << DINOFF_PIN_SHIFT(pin));
-	regs->PUSEL = (regs->PUSEL & ~PUSEL_MASK(pin)) |
-		      (bias << PUSEL_PIN_SHIFT(pin));
 
 	return 0;
 }
@@ -234,18 +220,13 @@ static const struct gpio_driver_api gpio_m031_driver_api = {
 	.port_set_bits_raw = gpio_m031_port_set_bits_raw,
 	.port_clear_bits_raw = gpio_m031_port_clear_bits_raw,
 	.port_toggle_bits = gpio_m031_port_toggle_bits,
-	.pin_interrupt_configure = gpio_m031_pin_interrupt_configure,
-	.manage_callback = gpio_m031_manage_callback,
+	// .pin_interrupt_configure = gpio_m031_pin_interrupt_configure,
+	// .manage_callback = gpio_m031_manage_callback,
 };
 
 #define GPIO_M031_INIT(n)						\
 	static int gpio_m031_port##n##_init(const struct device *dev)\
 	{								\
-		IRQ_CONNECT(DT_INST_IRQN(n),				\
-			    DT_INST_IRQ(n, priority),			\
-			    gpio_m031_isr,				\
-			    DEVICE_DT_INST_GET(n), 0);			\
-		irq_enable(DT_INST_IRQN(n));				\
 		return 0;						\
 	}								\
 									\
