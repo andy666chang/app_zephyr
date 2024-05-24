@@ -1,0 +1,14 @@
+
+choice
+	prompt "NUVOTON M03X MCU Selection"
+	depends on SOC_SERIES_M03X
+
+config SOC_M031TD
+	bool "M031"
+	select M031_TD
+
+config SOC_M031LE
+	bool "M031"
+	select M031_LE
+
+endchoice

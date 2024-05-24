@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "numicro-gpio.h": "c",
+        "pinctrl.h": "c",
+        "numicro.h": "c",
+        "clock_control_numaker.h": "c"
+    }
+}

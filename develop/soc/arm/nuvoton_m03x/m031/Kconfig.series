@@ -1,0 +1,8 @@
+
+config SOC_SERIES_M03X
+	bool "Nuvoton M03X Series MCU"
+	select ARM
+	select CPU_CORTEX_M0
+	select SOC_FAMILY_M03X
+	help
+	  Enable support for NUVOTON M03X MCU series

@@ -1,0 +1,15 @@
+
+if SOC_SERIES_M03X
+
+config M031_TD
+	bool
+
+config M031_LE
+	bool
+
+rsource "Kconfig.defconfig.m031"
+
+config SOC_SERIES
+	default "m031"
+
+endif # SOC_SERIES_M03X

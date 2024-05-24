@@ -1,0 +1,11 @@
+
+menuconfig CLOCK_CTRL_M03X
+	bool "CLOCK_CTRL Driver for M03X family of MCUs"
+	default y
+	depends on SOC_FAMILY_M03X
+	help
+	  Enable CLOCK_CTRL driver for M03X MCUs
+
+if CLOCK_CTRL_M03X
+	
+endif # CLOCK_CTRL_M03X

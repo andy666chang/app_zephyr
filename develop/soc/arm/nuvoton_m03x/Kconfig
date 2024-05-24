@@ -1,0 +1,14 @@
+
+config SOC_FAMILY_M03X
+	select PLATFORM_SPECIFIC_INIT
+	bool
+
+if SOC_FAMILY_M03X
+
+config SOC_FAMILY
+	string
+	default "nuvoton_m03x"
+
+rsource "./*/Kconfig.soc"
+
+endif # SOC_FAMILY_M03X

@@ -2,3 +2,4 @@
 .venv/**
 zephyr*/**
 develop/build/**
+build/**

@@ -1,0 +1,9 @@
+
+menu "Develop Configuration"
+
+
+
+endmenu
+
+rsource "drivers/Kconfig"
+rsource "hal/Kconfig"
