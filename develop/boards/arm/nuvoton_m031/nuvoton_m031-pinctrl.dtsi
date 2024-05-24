@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// #include <nuvoton/m031/dts/M03x-pinctrl.h>
-#include "M03x-pinctrl.h"
+#include <zephyr/dt-bindings/pinctrl/m03x-pinctrl.h>
 
 &pinctrl {
 	uart0_default: uart0_default {
