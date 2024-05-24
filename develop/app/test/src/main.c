@@ -31,14 +31,15 @@ int main(void) {
     printf("Hello World!\n");
 
     while (1) {
-        ret = gpio_pin_toggle_dt(&led);
-		if (ret < 0) {
-			return 0;
-		}
-
-		led_state = !led_state;
-		printf("LED state: %s\n", led_state ? "ON" : "OFF");
+		gpio_pin_set_dt(&led, 0);
 		k_msleep(SLEEP_TIME_MS);
+		// k_busy_wait(1000000);
+		printf("LED state: %s\n", "ON");
+
+		gpio_pin_set_dt(&led, 1);
+		k_msleep(SLEEP_TIME_MS);
+		// k_busy_wait(1000000);
+		printf("LED state: %s\n", "OFF");
     }
 
     return 0;
