@@ -1,0 +1,12 @@
+description: NUVOTON M031 FAMILY UART
+
+compatible: "nuvoton,m031-uart"
+
+include: [uart-controller.yaml, pinctrl-device.yaml]
+
+properties:
+  reg:
+    required: true
+
+  pinctrl-0:
+    required: true

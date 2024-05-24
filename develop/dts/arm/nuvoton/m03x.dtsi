@@ -118,49 +118,49 @@
         };
 
         uart0: serial@40070000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40070000 0x1000>;
             status = "disabled";
         };
 
         uart1: serial@40071000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40071000 0x1000>;
             status = "disabled";
         };
 
         uart2: serial@40072000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40072000 0x1000>;
             status = "disabled";
         };
 
         uart3: serial@40073000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40073000 0x1000>;
             status = "disabled";
         };
 
         uart4: serial@40074000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40074000 0x1000>;
             status = "disabled";
         };
 
         uart5: serial@40075000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40075000 0x1000>;
             status = "disabled";
         };
 
         uart6: serial@40076000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40076000 0x1000>;
             status = "disabled";
         };
 
         uart7: serial@40077000 {
-            compatible = "nuvoton,numicro-uart";
+            compatible = "nuvoton,m031-uart";
             reg = <0x40077000 0x1000>;
             status = "disabled";
         };

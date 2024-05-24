@@ -31,7 +31,7 @@ config M031_SPI
 config M031_TMR
     bool 
 
-config M031_USART
+config M031_UART
     bool 
 
 config M031_WWDT
