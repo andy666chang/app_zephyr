@@ -45,7 +45,7 @@ zephyr_library_sources_ifdef(CONFIG_M031_GPIO    ${SERIES_NAME_L}/Library/${STD_
 zephyr_library_sources_ifdef(CONFIG_M031_I2C     ${SERIES_NAME_L}/Library/${STD_PERIPH_DRV_DIR}/src/i2c.c)
 zephyr_library_sources_ifdef(CONFIG_M031_SPI     ${SERIES_NAME_L}/Library/${STD_PERIPH_DRV_DIR}/src/spi.c)
 zephyr_library_sources_ifdef(CONFIG_M031_TMR     ${SERIES_NAME_L}/Library/${STD_PERIPH_DRV_DIR}/src/timer.c)
-zephyr_library_sources_ifdef(CONFIG_M031_USART   ${SERIES_NAME_L}/Library/${STD_PERIPH_DRV_DIR}/src/uart.c)
+zephyr_library_sources_ifdef(CONFIG_M031_UART    ${SERIES_NAME_L}/Library/${STD_PERIPH_DRV_DIR}/src/uart.c)
 zephyr_library_sources_ifdef(CONFIG_M031_WWDT    ${SERIES_NAME_L}/Library/${STD_PERIPH_DRV_DIR}/src/wwdt.c)
 
 # acmp.c

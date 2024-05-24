@@ -1,0 +1,8 @@
+menuconfig UART_M031
+	bool "UART Driver for M031 family of MCUs"
+    default y
+	depends on SOC_FAMILY_M03X
+    select SERIAL_HAS_DRIVER
+	select M031_UART
+	help
+	  Enable UART driver for M031 MCUs

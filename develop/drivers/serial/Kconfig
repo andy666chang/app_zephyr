@@ -1,0 +1,10 @@
+
+if SERIAL
+
+module = SERIAL
+module-str = SERIAL
+source "subsys/logging/Kconfig.template.log_config"
+
+rsource "./Kconfig.*"
+
+endif # SERIAL

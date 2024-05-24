@@ -34,12 +34,12 @@ int main(void) {
 		gpio_pin_set_dt(&led, 0);
 		k_msleep(SLEEP_TIME_MS);
 		// k_busy_wait(1000000);
-		printf("LED state: %s\n", "ON");
+		// printf("LED state: %s\n", "ON");
 
 		gpio_pin_set_dt(&led, 1);
 		k_msleep(SLEEP_TIME_MS);
 		// k_busy_wait(1000000);
-		printf("LED state: %s\n", "OFF");
+		// printf("LED state: %s\n", "OFF");
     }
 
     return 0;
