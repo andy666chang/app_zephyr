@@ -1,0 +1,10 @@
+
+menuconfig FLASH_M031
+	bool "FLASH Driver for M031 family of MCUs"
+    default y
+	depends on SOC_FAMILY_M03X
+	select FLASH_HAS_PAGE_LAYOUT
+	select FLASH_HAS_DRIVER_ENABLED
+	select M031_FMC
+	help
+	  Enable FLASH driver for M031 MCUs
