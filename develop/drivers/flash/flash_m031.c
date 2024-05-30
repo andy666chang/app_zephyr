@@ -6,13 +6,14 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/flash.h>
 
+#include <stdio.h>
 #include <NuMicro.h>
 
 #define SOC_NV_FLASH_NODE	DT_INST(0, soc_nv_flash)
 #define SOC_NV_FLASH_SIZE	DT_REG_SIZE(SOC_NV_FLASH_NODE)
 #define SOC_NV_FLASH_ADDR	DT_REG_ADDR(SOC_NV_FLASH_NODE)
 #define SOC_NV_FLASH_PRG_SIZE	DT_PROP(SOC_NV_FLASH_NODE, write_block_size)
-#define SOC_NV_FLASH_ERA_SIZE	DT_PROP(SOC_NV_FLASH_NODE, erase-block-size)
+#define SOC_NV_FLASH_ERA_SIZE	DT_PROP(SOC_NV_FLASH_NODE, erase_block_size)
 
 struct flash_m031_data {
 	struct k_sem mutex;
@@ -44,6 +45,8 @@ bool flash_m031_valid_range(off_t offset, uint32_t len, bool write)
 static int flash_m031_read(const struct device *dev, off_t offset,
 			   void *data, size_t len)
 {
+	struct flash_m031_data *dev_data = dev->data;
+
     if (!flash_m031_valid_range(offset, len, true)) {
 		return -EINVAL;
 	}
@@ -51,26 +54,31 @@ static int flash_m031_read(const struct device *dev, off_t offset,
 	k_sem_take(&dev_data->mutex, K_FOREVER);
 
 	/* Enable FMC ISP function */
+	SYS_UnlockReg();
     FMC_Open();
 
     // read
-    for (uint32_t u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4) {
-        uint32_t u32Pattern u32data = FMC_Read(u32Addr);   /* Read a flash word from address u32Addr. */
+    for (uint32_t u32Addr = offset; u32Addr < offset+len; u32Addr += 4) {
+        uint32_t u32Pattern = 0;
+		u32Pattern = FMC_Read(u32Addr);   /* Read a flash word from address u32Addr. */
 
         if (g_FMC_i32ErrCode != 0)
         {
             printf("FMC_Read address 0x%x failed!\n", u32Addr);
+			FMC_Close();
+			SYS_LockReg();
+			k_sem_give(&dev_data->mutex);
             return -ENOEXEC;
         }
 
         memcpy((void *)data, (void *)&u32Pattern, sizeof(uint32_t));
 
-        (uint32_t *)data++;
+        data += 4;
     }
 
     /* Disable FMC ISP function */
     FMC_Close();
-
+	SYS_LockReg();
 	k_sem_give(&dev_data->mutex);
 
 	return 0;
@@ -93,6 +101,7 @@ static int flash_m031_write(const struct device *dev, off_t offset,
 	k_sem_take(&dev_data->mutex, K_FOREVER);
 
 	/* Enable FMC ISP function */
+    SYS_UnlockReg();
     FMC_Open();
 
     /* Fill flash range from u32StartAddr to u32EndAddr. */
@@ -102,15 +111,18 @@ static int flash_m031_write(const struct device *dev, off_t offset,
         if (FMC_Write(u32Addr, u32Pattern) != 0)          /* Program flash */
         {
             printf("FMC_Write address 0x%x failed!\n", u32Addr);
+			FMC_Close();
+			SYS_LockReg();
+			k_sem_give(&dev_data->mutex);
             return -ENOEXEC;
         }
 
-        (uint32_t *)data++;
+        data += 4;
     }
 
     /* Disable FMC ISP function */
     FMC_Close();
-
+	SYS_LockReg();
 	k_sem_give(&dev_data->mutex);
 
 	return ret;
@@ -125,13 +137,14 @@ static int flash_m031_erase(const struct device *dev, off_t offset, size_t size)
 		return 0;
 	}
 
-    if (!flash_m031_valid_range(offset, len, true)) {
+    if (!flash_m031_valid_range(offset, size, true)) {
 		return -EINVAL;
 	}
 
 	k_sem_take(&data->mutex, K_FOREVER);
 
     /* Enable FMC ISP function */
+    SYS_UnlockReg();
     FMC_Open();
 
     // Erase
@@ -141,7 +154,7 @@ static int flash_m031_erase(const struct device *dev, off_t offset, size_t size)
 
     /* Disable FMC ISP function */
     FMC_Close();
-
+	SYS_LockReg();
 	k_sem_give(&data->mutex);
 
 	return ret;
@@ -155,6 +168,25 @@ flash_m031_get_parameters(const struct device *dev)
 
 	return &flash_m031_parameters;
 }
+
+#ifdef CONFIG_FLASH_PAGE_LAYOUT
+static const struct flash_pages_layout m031_fmc_layout[] = {
+	{
+	.pages_size = SOC_NV_FLASH_ERA_SIZE,
+	.pages_count = SOC_NV_FLASH_SIZE / SOC_NV_FLASH_ERA_SIZE,
+	}
+};
+
+void flash_m031_pages_layout(const struct device *dev,
+			     const struct flash_pages_layout **layout,
+			     size_t *layout_size)
+{
+	ARG_UNUSED(dev);
+
+	*layout = m031_fmc_layout;
+	*layout_size = ARRAY_SIZE(m031_fmc_layout);
+}
+#endif
 
 static const struct flash_driver_api flash_m031_driver_api = {
 	.read = flash_m031_read,
