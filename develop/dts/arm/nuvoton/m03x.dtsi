@@ -31,10 +31,17 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		flash0: flash@0 {
+		aprom: flash@0 {
 			compatible = "soc-nv-flash";
 			reg = <0 DT_SIZE_K(512)>;
-			erase-block-size = <256>;
+			erase-block-size = <512>;
+			write-block-size = <1>;
+		};
+
+        ldrom: flash@100000 {
+			compatible = "soc-nv-flash";
+			reg = <0x100000 DT_SIZE_K(4)>;
+			erase-block-size = <512>;
 			write-block-size = <1>;
 		};
 	};

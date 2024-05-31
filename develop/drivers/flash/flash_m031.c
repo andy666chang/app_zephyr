@@ -7,13 +7,20 @@
 #include <zephyr/drivers/flash.h>
 
 #include <stdio.h>
+#include <string.h>
 #include <NuMicro.h>
 
-#define SOC_NV_FLASH_NODE	DT_INST(0, soc_nv_flash)
-#define SOC_NV_FLASH_SIZE	DT_REG_SIZE(SOC_NV_FLASH_NODE)
-#define SOC_NV_FLASH_ADDR	DT_REG_ADDR(SOC_NV_FLASH_NODE)
-#define SOC_NV_FLASH_PRG_SIZE	DT_PROP(SOC_NV_FLASH_NODE, write_block_size)
-#define SOC_NV_FLASH_ERA_SIZE	DT_PROP(SOC_NV_FLASH_NODE, erase_block_size)
+#define APROM_FLASH_NODE	DT_NODELABEL(aprom)
+#define APROM_FLASH_SIZE	DT_REG_SIZE(APROM_FLASH_NODE)
+#define APROM_FLASH_ADDR	DT_REG_ADDR(APROM_FLASH_NODE)
+#define APROM_FLASH_PRG_SIZE	DT_PROP(APROM_FLASH_NODE, write_block_size)
+#define APROM_FLASH_ERA_SIZE	DT_PROP(APROM_FLASH_NODE, erase_block_size)
+
+#define LDROM_FLASH_NODE	DT_NODELABEL(ldrom)
+#define LDROM_FLASH_SIZE	DT_REG_SIZE(LDROM_FLASH_NODE)
+#define LDROM_FLASH_ADDR	DT_REG_ADDR(LDROM_FLASH_NODE)
+#define LDROM_FLASH_PRG_SIZE	DT_PROP(LDROM_FLASH_NODE, write_block_size)
+#define LDROM_FLASH_ERA_SIZE	DT_PROP(LDROM_FLASH_NODE, erase_block_size)
 
 struct flash_m031_data {
 	struct k_sem mutex;
@@ -22,16 +29,23 @@ struct flash_m031_data {
 static struct flash_m031_data flash_data;
 
 static const struct flash_parameters flash_m031_parameters = {
-	.write_block_size = SOC_NV_FLASH_PRG_SIZE,
+	.write_block_size = APROM_FLASH_PRG_SIZE,
 	.erase_value = 0xff,
 };
 
 bool flash_m031_valid_range(off_t offset, uint32_t len, bool write)
 {
-	if ((offset > SOC_NV_FLASH_SIZE) ||
-	    ((offset + len) > SOC_NV_FLASH_SIZE)) {
-		return false;
-	}
+	off_t start = offset, end = offset + end;
+
+    // APROM valid
+    if ((offset > APROM_FLASH_SIZE) || ((offset + len) > APROM_FLASH_SIZE)) {
+        // LDROM valid
+        if ((offset < LDROM_FLASH_ADDR) ||
+            ((offset + len) > LDROM_FLASH_ADDR + LDROM_FLASH_SIZE)) {
+			printf("Invalid range! offset: 0x%x, len: 0x%x\n", offset, len);
+            return false;
+        }
+    }
 
     /* Check offset and len is word aligned. */
 	if ((offset % sizeof(uint32_t)) ||
@@ -45,6 +59,7 @@ bool flash_m031_valid_range(off_t offset, uint32_t len, bool write)
 static int flash_m031_read(const struct device *dev, off_t offset,
 			   void *data, size_t len)
 {
+	int ret = 0;
 	struct flash_m031_data *dev_data = dev->data;
 
     if (!flash_m031_valid_range(offset, len, true)) {
@@ -98,11 +113,19 @@ static int flash_m031_write(const struct device *dev, off_t offset,
 		return -EINVAL;
 	}
 
-	k_sem_take(&dev_data->mutex, K_FOREVER);
+	ret = k_sem_take(&dev_data->mutex, K_SECONDS(1));
+	if (ret) {
+		printf("sem_take: %d\n", ret);
+		return ret;
+	}
+	
 
 	/* Enable FMC ISP function */
     SYS_UnlockReg();
     FMC_Open();
+	if (offset>= LDROM_FLASH_ADDR)
+		FMC_ENABLE_LD_UPDATE();
+	
 
     /* Fill flash range from u32StartAddr to u32EndAddr. */
     for (uint32_t u32Addr = offset; u32Addr < offset+len; u32Addr += 4) {
@@ -121,6 +144,8 @@ static int flash_m031_write(const struct device *dev, off_t offset,
     }
 
     /* Disable FMC ISP function */
+	if (offset>= LDROM_FLASH_ADDR)
+		FMC_DISABLE_LD_UPDATE();
     FMC_Close();
 	SYS_LockReg();
 	k_sem_give(&dev_data->mutex);
@@ -146,13 +171,17 @@ static int flash_m031_erase(const struct device *dev, off_t offset, size_t size)
     /* Enable FMC ISP function */
     SYS_UnlockReg();
     FMC_Open();
+	if (offset>= LDROM_FLASH_ADDR)
+		FMC_ENABLE_LD_UPDATE();
 
     // Erase
-    for (size_t addr = offset; addr < offset+size; addr += SOC_NV_FLASH_ERA_SIZE) {
+    for (size_t addr = offset; addr < offset+size; addr += APROM_FLASH_ERA_SIZE) {
         FMC_Erase(addr);
     }
 
     /* Disable FMC ISP function */
+	if (offset>= LDROM_FLASH_ADDR)
+		FMC_DISABLE_LD_UPDATE();
     FMC_Close();
 	SYS_LockReg();
 	k_sem_give(&data->mutex);
@@ -172,8 +201,17 @@ flash_m031_get_parameters(const struct device *dev)
 #ifdef CONFIG_FLASH_PAGE_LAYOUT
 static const struct flash_pages_layout m031_fmc_layout[] = {
 	{
-	.pages_size = SOC_NV_FLASH_ERA_SIZE,
-	.pages_count = SOC_NV_FLASH_SIZE / SOC_NV_FLASH_ERA_SIZE,
+	.pages_size = APROM_FLASH_ERA_SIZE,
+	.pages_count = APROM_FLASH_SIZE / APROM_FLASH_ERA_SIZE,
+	},
+	{
+	.pages_size = LDROM_FLASH_ERA_SIZE,
+	.pages_count = LDROM_FLASH_SIZE / LDROM_FLASH_ERA_SIZE,
+	},
+	// ALL partition
+	{
+	.pages_size = LDROM_FLASH_ERA_SIZE,
+	.pages_count = FMC_USER_CONFIG_2 / LDROM_FLASH_ERA_SIZE,
 	}
 };
 
@@ -204,6 +242,20 @@ static int flash_m031_init(const struct device *dev)
 	struct flash_m031_data *data = dev->data;
 
 	k_sem_init(&data->mutex, 1, 1);
+
+	// k_sem_take(&data->mutex, K_FOREVER);
+    // /* Enable FMC ISP function */
+    // SYS_UnlockReg();
+    // FMC_Open();
+
+	// /* Read Data Flash base address */
+    // uint32_t u32Data = FMC_ReadDataFlashBaseAddr();
+    // printf("  Data Flash Base Address ............... [0x%08x]\n", u32Data);
+
+	// /* Disable FMC ISP function */
+    // FMC_Close();
+	// SYS_LockReg();
+	// k_sem_give(&data->mutex);
 
 	return 0;
 }
