@@ -249,3 +249,24 @@ static const struct gpio_driver_api gpio_m031_driver_api = {
 			      &gpio_m031_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_M031_INIT)
+
+
+#include <zephyr/irq.h>
+static void gpio_abgh(void *arg) {
+	printf("%s\n",__func__);
+}
+
+static void gpio_cdef(void *arg) {
+	printf("%s\n",__func__);
+}
+
+static void gpio_isr_installer(void) {
+	printf("%s\n",__func__);
+    // IRQ_CONNECT(4, 0, my_isr, NULL, 0);
+	IRQ_DIRECT_CONNECT(4, 0, gpio_abgh, 0);
+	IRQ_DIRECT_CONNECT(5, 0, gpio_cdef, 0);
+    irq_enable(4);
+	irq_enable(5);
+}
+
+SYS_INIT(gpio_isr_installer, PRE_KERNEL_1, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
