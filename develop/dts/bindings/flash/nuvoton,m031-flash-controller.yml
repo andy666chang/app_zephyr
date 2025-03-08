@@ -1,0 +1,8 @@
+
+
+description: |
+  M031 controller
+
+compatible: "nuvoton,m031-flash-controller"
+
+include: flash-controller.yaml
