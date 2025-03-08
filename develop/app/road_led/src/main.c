@@ -54,7 +54,7 @@ int main(void)
 
 static void blink(void)
 {
-	const struct gpio_dt_spec spec = GPIO_DT_SPEC_GET(DT_NODELABEL(bd_led), gpios);
+	const struct gpio_dt_spec spec = GPIO_DT_SPEC_GET(DT_NODELABEL(led0), gpios);
 	int ret;
 
 	printk("Thread: %s\n", __func__);

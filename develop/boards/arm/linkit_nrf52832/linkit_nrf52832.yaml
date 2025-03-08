@@ -1,5 +1,5 @@
 identifier: nrf52
-name: nRF52-DK-NRF52832
+name: LINKIT-NRF52832
 type: mcu
 arch: arm
 toolchain:
