@@ -12,7 +12,6 @@
 
 int main(void)
 {
-	#if 0
 	const struct device *const dev = DEVICE_DT_GET_ONE(st_vl53l0x);
 	struct sensor_value value;
 	int ret;
@@ -40,7 +39,6 @@ int main(void)
 		k_sleep(K_MSEC(1000));
 	}
 	return 0;
-	#endif
 }
 
 
