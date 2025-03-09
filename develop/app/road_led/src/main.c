@@ -18,6 +18,8 @@ int main(void) {
     struct sensor_value value;
     int ret;
 
+	printk("Hello World: %s\n", CONFIG_BOARD);
+
     if (!device_is_ready(dev)) {
         LOG_ERR("sensor: device not ready.");
         return 0;
