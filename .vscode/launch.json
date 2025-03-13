@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // "armToolchainPath": "D:/Andy/Desktop/MCHP/zephyr-sdk-0.17.0/arm-zephyr-eabi/bin",
+            "gdbPath": "D:/Andy/Desktop/MCHP/zephyr-sdk-0.17.0/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb.exe",
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            // "request": "launch",
+            "request": "attach",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "interface": "swd",
+            "configFiles": [
+                "tools/openocd/interface/cmsis-dap.cfg",
+                "tools/openocd/target/nrf52.cfg"
+                // "tools/openocd/target/cortex-m4.cfg"
+            ],
+            "executable": "build/zephyr/zephyr.elf",
+            "svdFile": "tools/openocd/svd/nrf52.svd",
+
+            "rttConfig": {
+                "enabled": true,
+                "address": "auto",
+                "decoders": [
+                    {
+                        "port": 0,
+                        "type": "console"
+                    },
+                    {
+                        "port": 1,
+                        "type": "graph",
+                        "graphId": "1", 
+                        "encoding": "signed",
+                        "scale": 1
+                    }
+                ]
+            },
+            "graphConfig": [
+                {
+                    "label": "Counter",
+                    "timespan": 10,
+                    "type": "realtime",
+                    "annotate": false,
+                    "maximum": 256,
+                    "minimum": 0,
+                    "plots": [
+                        {
+                            "graphId": "1", 
+                            "label": "test_data1",
+                            "color": "#53753c"
+                        }
+                    ]
+                },
+            ],
+            "showDevDebugOutput": "raw"
+        }
+    ]
+}
